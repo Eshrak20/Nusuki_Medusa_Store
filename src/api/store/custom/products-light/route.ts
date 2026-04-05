@@ -2,9 +2,17 @@ import { MedusaRequest, MedusaResponse } from "@medusajs/framework"
 
 export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
     const query = req.scope.resolve("query")
+
     const type = req.query.type as string
 
-    const { data: products } = await query.graph({
+    const limitRaw = parseInt(req.query.limit as string)
+    const offsetRaw = parseInt(req.query.offset as string)
+
+    const limit = isNaN(limitRaw) ? 8 : Math.min(limitRaw, 50)
+    const offset = isNaN(offsetRaw) ? 0 : offsetRaw
+
+    // 🔹 STEP 1: get ALL products (no pagination)
+    const { data: allProducts } = await query.graph({
         entity: "product",
         fields: [
             "id",
@@ -15,22 +23,25 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
             "variants.prices.amount",
             "variants.prices.currency_code",
             "created_at"
-        ],
-        pagination: {
-            take: 8 
-        }
+        ]
     })
 
-    // 🚀 New Arrivals
+    // 🔥 STEP 2: handle "new"
+    let sorted = allProducts
+
     if (type === "new") {
-        products.sort(
+        sorted = [...allProducts].sort(
             (a: any, b: any) =>
                 new Date(b.created_at).getTime() -
                 new Date(a.created_at).getTime()
         )
     }
 
-    const formatted = products.map((p: any) => {
+    // 🔥 STEP 3: apply pagination manually
+    const paginated = sorted.slice(offset, offset + limit)
+
+    // 🔹 FORMAT
+    const formatted = paginated.map((p: any) => {
         const variant = p.variants?.[0]
         const price = variant?.prices?.[0]
 
@@ -44,5 +55,10 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
         }
     })
 
-    return res.json({ products: formatted })
+    return res.json({
+        products: formatted,
+        offset,
+        limit,
+        total: allProducts.length
+    })
 }

@@ -6,33 +6,29 @@ module.exports = defineConfig({
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
     http: {
-      storeCors: process.env.STORE_CORS!,
-      adminCors: process.env.ADMIN_CORS!,
-      authCors: process.env.AUTH_CORS!,
+      storeCors: process.env.STORE_CORS || "http://localhost:5173",
+      adminCors: process.env.ADMIN_CORS || "http://localhost:5173",
+      authCors: process.env.AUTH_CORS || "http://localhost:5173",
       jwtSecret: process.env.JWT_SECRET || "supersecret",
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     }
   },
   modules: [
-    // Add the File module here to override the local storage
     {
-      resolve: "@medusajs/medusa/file",
+      resolve: "@medusajs/payment",
       options: {
         providers: [
           {
-            resolve: "@ridoy_sarker/medusa-cloudinary/providers/cloudinary",
-            id: "cloudinary",
+            resolve: "./src/modules/ssl-commerz", // Path to the folder
+            id: "ssl-commerz", // This is the ID Awilix is complaining about
             options: {
-              cloudName: process.env.CLOUDINARY_CLOUD_NAME,
-              apiKey: process.env.CLOUDINARY_API_KEY,
-              apiSecret: process.env.CLOUDINARY_API_SECRET,
-              folderName: "medusa-products", // Optional: organizes files into a specific folder in Cloudinary
-              secure: true, // Forces HTTPS
-            },
-          },
-        ],
-      },
-    },
-    // ... any other modules you have
-  ],
+              store_id: process.env.SSLCOMMERZ_STORE_ID,
+              store_passwd: process.env.SSLCOMMERZ_STORE_PASSWORD,
+              is_live: process.env.SSLCOMMERZ_IS_LIVE === "true",
+            }
+          }
+        ]
+      }
+    }
+  ]
 })

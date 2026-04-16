@@ -14,6 +14,7 @@ module.exports = defineConfig({
     }
   },
   modules: [
+    // 🔹 Payment Module
     {
       resolve: "@medusajs/payment",
       options: {
@@ -25,10 +26,31 @@ module.exports = defineConfig({
               store_id: process.env.SSLCOMMERZ_STORE_ID,
               store_passwd: process.env.SSLCOMMERZ_STORE_PASSWORD,
               is_live: process.env.SSLCOMMERZ_IS_LIVE === "true",
-            }
-          }
-        ]
-      }
-    }
+            },
+          },
+        ],
+      },
+    },
+
+    // 🔹 File Upload Module (Cloudinary)
+    {
+      resolve: "@medusajs/medusa/file",
+      options: {
+        providers: [
+          {
+            resolve:
+              "@ridoy_sarker/medusa-cloudinary/providers/cloudinary",
+            id: "cloudinary",
+            options: {
+              cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+              apiKey: process.env.CLOUDINARY_API_KEY,
+              apiSecret: process.env.CLOUDINARY_API_SECRET,
+              folderName: "medusa-products",
+              secure: true,
+            },
+          },
+        ],
+      },
+    },
   ]
 })

@@ -1,9 +1,7 @@
-import SslCommerzProviderService from "./service"
+import SslCommerzService from "./service"
 import { ModuleProvider, Modules } from "@medusajs/framework/utils"
 
-// This string MUST match the ID used in medusa-config.ts
-export const SSL_COMMERZ_PROVIDER = "ssl-commerz"
-
+// Ensure you are exporting the result of ModuleProvider as the DEFAULT export
 export default ModuleProvider(Modules.PAYMENT, {
-  services: [SslCommerzProviderService],
+  services: [SslCommerzService],
 })

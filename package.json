@@ -26,6 +26,7 @@
     "@medusajs/cli": "2.13.1",
     "@medusajs/framework": "2.13.1",
     "@medusajs/medusa": "2.13.1",
+    "awilix": "^8.0.1",
     "medusa-file-cloudinary": "^1.0.2",
     "sslcommerz-lts": "^1.2.0"
   },

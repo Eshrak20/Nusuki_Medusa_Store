@@ -19,8 +19,8 @@ module.exports = defineConfig({
       options: {
         providers: [
           {
-            resolve: "./src/modules/ssl-commerz", // Path to the folder
-            id: "ssl-commerz", // This is the ID Awilix is complaining about
+            resolve: "./src/modules/ssl-commerz",
+            id: "commerz",
             options: {
               store_id: process.env.SSLCOMMERZ_STORE_ID,
               store_passwd: process.env.SSLCOMMERZ_STORE_PASSWORD,

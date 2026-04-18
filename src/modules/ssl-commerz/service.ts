@@ -37,18 +37,28 @@ class SslCommerzService extends AbstractPaymentProvider {
         );
     }
 
-
     async initiatePayment(input: InitiatePaymentInput): Promise<InitiatePaymentOutput> {
+        const baseUrl = 'http://localhost:9000';
+        const debugUrl = 'https://webhook.site/b2eb03ba-2d5d-4de6-a46d-df7f779a0920';
+
         try {
             // SSLCommerz requires these fields to not be empty
             const data = {
                 total_amount: input.amount,
                 currency: (input.currency_code || "BDT").toUpperCase(),
                 tran_id: input.data?.tran_id || `TRX-${Date.now()}`,
-                success_url: 'http://localhost:8000/api/sslcommerz/success',
-                fail_url: 'http://localhost:8000/api/sslcommerz/fail',
-                cancel_url: 'http://localhost:8000/api/sslcommerz/cancel',
-                ipn_url: 'http://localhost:8000/api/sslcommerz/ipn',
+                // FIX: Add /store/ to the path
+                // success_url: `${baseUrl}/store/sslcommerz/success`,
+                // fail_url: `${baseUrl}/store/sslcommerz/fail`,
+                // cancel_url: `${baseUrl}/store/sslcommerz/cancel`,
+                // ipn_url: `${baseUrl}/store/sslcommerz/ipn`,
+
+
+                // Redirect SSLCommerz to the debug site
+                success_url: debugUrl,
+                fail_url: debugUrl,
+                cancel_url: debugUrl,
+                ipn_url: debugUrl,
 
                 // MANDATORY CUSTOMER INFO (Use placeholders if input is missing them)
                 cus_name: 'Customer Name',
